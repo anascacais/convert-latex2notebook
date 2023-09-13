@@ -8,7 +8,7 @@ from nbformat.v4 import new_notebook
 
 # local
 from cell_contents import add_cell, get_banners, get_header_and_body, get_header_info
-from latex_parsing import parse_itemize, parse_enumerate, parse_sections, parse_text_formatting, parse_code, parse_quotes, remove_comments
+from latex_parsing import parse_itemize, parse_enumerate, parse_sections, parse_text_formatting, parse_code, parse_quotes, remove_comments, parse_figures
 
 ##################
 
@@ -45,7 +45,7 @@ body = parse_itemize(body)
 body = parse_enumerate(body)
 body = parse_sections(body)
 body = parse_quotes(body)
-# body = parse_figures(body)
+body = parse_figures(body)
 body = parse_code(body)
 
 body_items = re.split(r'```\(python\)([^?]*)\(python\)```', body)

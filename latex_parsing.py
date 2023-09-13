@@ -6,6 +6,12 @@ from string_aux_functions import try_search
 
 def parse_text_formatting(test_string):
 
+    test_string = test_string.replace('\\textbackslash ', '\\')
+
+    url_items = re.findall(r'\\url{([^}]*)}', test_string)
+    for url_item in url_items:
+        test_string = test_string.replace(f'\\url{{{url_item}}}', f'[{url_item}]({url_item})')
+
     bold_items = re.findall(r'\\textbf{([^}]*)}', test_string)
     for bold_item in bold_items:
         test_string = test_string.replace(f'\\textbf{{{bold_item}}}', f'**{bold_item}**')
@@ -17,6 +23,10 @@ def parse_text_formatting(test_string):
     texttt_items = re.findall(r'\\texttt{([^}]*)}', test_string)
     for texttt_item in texttt_items:
         test_string = test_string.replace(f'\\texttt{{{texttt_item}}}', f'`{texttt_item}`')
+
+    ref_items = re.findall(r'\\ref{([^}]*)}', test_string)
+    for ref_item in ref_items:
+        test_string = test_string.replace(f'\\ref{{{ref_item}}}', f'`{ref_item}`')
 
     test_string = test_string.replace('\\_', '_')
 
@@ -87,20 +97,20 @@ def parse_code(test_string):
 
 def parse_figures(test_string):
 
-    figures = re.findall(r'\\begin{figure}([^?]*)\\end{figure}', test_string)
+    figure_items = re.findall(r'\\begin\{figure\}[^}]*\\includegraphics\[width=([^}]*)\\linewidth\]\{([^}]*)}[^}]*\\caption\{([^}]*)}', test_string)
+    non_figure_items = re.split(r'\\begin\{figure\}[^}]*\\includegraphics\[width=[^}]*\\linewidth\]\{[^}]*\}[^}]*\\caption\{[^}]*\}[^}]*\\label\{[^}]*\}[^}]*\\end{figure}', test_string)
 
-    for i, figure in enumerate(figures):
-        caption = try_search(r'\\caption{([^}]*)}', figure)
-        figure_path = try_search(r'\\includegraphics\[width=\d{0,2}\.\d{0,2}\\linewidth\]{([^?!]*.png|jpg|pdf|jpeg)}', figure)
-        # 
-        #\\includegraphics\[width=\d\.\d\\linewidth\]{([^?!]*.png|jpg|pdf|jpeg)}
+    new_test_string = ''
 
-        test_string.replace(
-            f'\\begin{{figure}}{figure}\\end{{figure}}',
-            f'<img src="{figure_path}" width="500" border="0"> <p style="color:#484848;text-align:center"> <i> Figure {i+1}: {caption} </i> </p>'
-        )
+    for i, figure in enumerate(figure_items):
+        size = figure[0]
+        figure_path = figure[1]
+        caption = figure[2]
+
+        new_test_string += non_figure_items[i]
+        new_test_string += f'<img src="{figure_path}" width="450" style="display=block; margin:auto"/> <p style="color:#484848;text-align:center"> <i> Figure {i+1}: {caption} </i> </p>'
         
-    return test_string
+    return new_test_string
 
 
 
