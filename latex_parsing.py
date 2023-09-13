@@ -109,7 +109,26 @@ def parse_figures(test_string):
 
         new_test_string += non_figure_items[i]
         new_test_string += f'<img src="{figure_path}" width="450" style="display=block; margin:auto"/> <p style="color:#484848;text-align:center"> <i> Figure {i+1}: {caption} </i> </p>'
-        
+    
+    new_test_string += non_figure_items[-1]
+
+    figure_items = re.findall(r'\\begin\{figure\}[^}]*\\begin\{minipage\}\{([^}]*)\\linewidth\}[^}]*\\includegraphics\[width=[^}]*\\linewidth\]\{([^}]*)}[^}]*\}\%[^}]*\}[^}]*\\begin\{minipage\}\{([^}]*)\\linewidth\}[^}]*\\includegraphics\[width=[^}]*\\linewidth\]\{([^}]*)}[^}]*\}[^}]*\\caption\{([^}]*)\}[^}]*\\label\{[^}]*\}[^}]*\\end{figure}', new_test_string)
+    non_figure_items = re.split(r'\\begin\{figure\}[^}]*\\begin\{minipage\}\{[^}]*\}[^}]*\\includegraphics\[width=[^}]*\\linewidth\]\{[^}]*}[^}]*\}\%[^}]*\}[^}]*\\begin\{minipage\}\{[^}]*\}[^}]*\\includegraphics\[width=[^}]*\\linewidth\]\{[^}]*}[^}]*\}[^}]*\\caption\{[^}]*\}[^}]*\\label\{[^}]*\}[^}]*\\end{figure}', new_test_string)
+
+    new_test_string = ''
+    
+    for i, figure in enumerate(figure_items):
+        size1 = figure[0]
+        figure_path1 = figure[1]
+        size2 = figure[2]
+        figure_path2 = figure[3]
+        caption = figure[4]
+
+        new_test_string += non_figure_items[i]
+        new_test_string += f'<table><tr>\n<td> <img src="{figure_path1}" width="350"/>  </td>\n<td> <img src="{figure_path2}" width="350"/>  </td>\n</tr></table>\n<p style="color:#484848;text-align:center"> <i> Figure {i+1}: {caption} </i> </p>'
+    
+    new_test_string += non_figure_items[-1]
+    
     return new_test_string
 
 

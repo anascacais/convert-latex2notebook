@@ -15,52 +15,63 @@ from latex_parsing import parse_itemize, parse_enumerate, parse_sections, parse_
 file_name = 'B011 Working with Arduino and Digital Interfaces'
 latex_folder_dir = f'/Users/anasofiacc/Downloads/{file_name}'
 
-with open(os.path.join(latex_folder_dir, 'main.tex')) as f:
-    latex_lines = [line.strip() for line in f.readlines()]
+def main(latex_folder_dir):
 
-nb = new_notebook() 
+    file_name = f'{os.path.basename(latex_folder_dir)}.ipynb'
 
-top_banner, bottom_banner = get_banners()
-add_cell(top_banner, 'md', nb)
+    with open(os.path.join(latex_folder_dir, 'main.tex')) as f:
+        latex_lines = [line.strip() for line in f.readlines()]
 
-###
+    nb = new_notebook() 
 
-header, body = get_header_and_body(latex_lines, sod_str='% document', eod_str='% bottom banner')
+    top_banner, bottom_banner = get_banners()
+    add_cell(top_banner, 'md', nb)
 
-header = parse_itemize(header)
-header = parse_enumerate(header)
+    ###
 
-header_info = get_header_info(header)
+    header, body = get_header_and_body(latex_lines, sod_str='% document', eod_str='% bottom banner')
 
-add_cell(header_info['title'], 'md', nb)
-add_cell(header_info['keywords'], 'md', nb)
-add_cell(header_info['notebook info'], 'md', nb)
-add_cell(header_info['description'], 'md', nb)
-add_cell(header_info['materials'], 'md', nb)
-add_cell('***', 'md', nb)
+    header = parse_itemize(header)
+    header = parse_enumerate(header)
 
-body = remove_comments(body)
-body = parse_text_formatting(body)
-body = parse_itemize(body)
-body = parse_enumerate(body)
-body = parse_sections(body)
-body = parse_quotes(body)
-body = parse_figures(body)
-body = parse_code(body)
+    header_info = get_header_info(header)
 
-body_items = re.split(r'```\(python\)([^?]*)\(python\)```', body)
-for i, item in enumerate(body_items):
-    if i % 2 == 0:
-        add_cell(item, 'md', nb)
-    else:
-        add_cell(item, 'code', nb)
+    add_cell(header_info['title'], 'md', nb)
+    add_cell(header_info['keywords'], 'md', nb)
+    add_cell(header_info['notebook info'], 'md', nb)
+    add_cell(header_info['description'], 'md', nb)
+    add_cell(header_info['materials'], 'md', nb)
+    add_cell('***', 'md', nb)
+
+    body = remove_comments(body)
+    body = parse_text_formatting(body)
+    body = parse_itemize(body)
+    body = parse_enumerate(body)
+    body = parse_sections(body)
+    body = parse_quotes(body)
+    body = parse_figures(body)
+    body = parse_code(body)
+
+    body_items = re.split(r'```\(python\)([^?]*)\(python\)```', body)
+    for i, item in enumerate(body_items):
+        if i % 2 == 0:
+            add_cell(item, 'md', nb)
+        else:
+            add_cell(item, 'code', nb)
 
 
-###
+    ###
 
-add_cell('***', 'md', nb)
-add_cell(bottom_banner, 'md', nb)
+    add_cell('***', 'md', nb)
+    add_cell(bottom_banner, 'md', nb)
 
-# save the notebook to a file
-with open('test_notebook.ipynb', 'w') as f:
-	nbformat.write(nb, f)
+    # save the notebook to a file
+    with open(os.path.join(latex_folder_dir, file_name), 'w') as f:
+        nbformat.write(nb, f)
+     
+
+if __name__ == '__main__':
+
+    latex_folder_dir = os.getcwd()
+    print(latex_folder_dir)
+    main(latex_folder_dir)
