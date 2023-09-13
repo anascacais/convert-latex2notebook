@@ -58,8 +58,8 @@ def get_header_info(header):
     header_info['author'] = try_search(r'\\author{(.*)}', header)                  
     header_info['date creation'] = try_search(r'\\datecreation{(.*)}', header)
     header_info['date update'] = try_search(r'\\dateupdate{(.*)}', header)
-    header_info['description'] = try_search(r'\\intro{(.*)}', header)
-    header_info['materials'] = try_search(r'\\materials{(.*)}', header)
+    header_info['description'] = try_search(r'\\intro{(\n*[^}]*)}', header)
+    header_info['materials'] = try_search(r'\\materials{(\n*[^}]*)}', header)
 
     # format info
     header_info['title'] = f'# <span style="color:#484848;"> {header_info["title"]} </span>'

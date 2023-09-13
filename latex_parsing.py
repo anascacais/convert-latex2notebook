@@ -77,6 +77,10 @@ def parse_code(test_string):
 
     for code_item in code_items:
         test_string = test_string.replace(f'\\begin{{lstlisting}}[language=C++]{code_item}\\end{{lstlisting}}', f'```\n{code_item}\n```')
+
+    code_items = re.findall(r'\\begin{lstlisting}\[language=Python]([^?!]*)\\end{lstlisting}', test_string)
+    for code_item in code_items:
+        test_string = test_string.replace(f'\\begin{{lstlisting}}[language=Python]{code_item}\\end{{lstlisting}}', f'```(python)\n{code_item}\n(python)```')
     
     return test_string
 
@@ -112,7 +116,7 @@ def parse_quotes(test_string):
     test_string = test_string.replace('\emojiwarning', '⚠️')
     test_string = test_string.replace('\emojiwrite', '✏️')
 
-    quotes = re.findall(r'\\begin{quote}([^?!]*)\\end{quote}', test_string)
+    quotes = re.findall(r'\\begin{quote}(\n*[^}]*)\\end{quote}', test_string)
     for quote in quotes:
         new_quote = quote.replace('\n', '\n> ')
         test_string = test_string.replace(f'\\begin{{quote}}{quote}\\end{{quote}}', f'{new_quote}')

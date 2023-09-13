@@ -2,6 +2,7 @@
 import os
 
 # third-party
+import re
 import nbformat
 from nbformat.v4 import new_notebook
 
@@ -47,7 +48,7 @@ body = parse_quotes(body)
 # body = parse_figures(body)
 body = parse_code(body)
 
-body_items = body.split('```')
+body_items = re.split(r'```\(python\)(.*)\(python\)```', body)
 for i, item in enumerate(body_items):
     if i % 2 == 0:
         add_cell(item, 'md', nb)
