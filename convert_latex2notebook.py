@@ -1,5 +1,6 @@
 # built-in
 import os
+import glob
 
 # third-party
 import re
@@ -11,9 +12,6 @@ from cell_contents import add_cell, get_banners, get_header_and_body, get_header
 from latex_parsing import parse_itemize, parse_enumerate, parse_sections, parse_text_formatting, parse_code, parse_quotes, remove_comments, parse_figures
 
 ##################
-
-file_name = 'B011 Working with Arduino and Digital Interfaces'
-latex_folder_dir = f'/Users/anasofiacc/Downloads/{file_name}'
 
 def main(latex_folder_dir):
 
@@ -73,5 +71,16 @@ def main(latex_folder_dir):
 if __name__ == '__main__':
 
     latex_folder_dir = os.getcwd()
-    print(latex_folder_dir)
     main(latex_folder_dir)
+
+    # remove unwanted files
+    for unwanted_path in glob.iglob(os.path.join(latex_folder_dir, '*.pdf')):
+        filename = os.path.basename(unwanted_path)
+        if os.path.basename(latex_folder_dir) not in filename:
+            os.remove(unwanted_path)
+            print(f'-- removed {filename}')
+
+    for unwanted_path in glob.iglob(os.path.join(latex_folder_dir, '*.png')):
+        filename = os.path.basename(unwanted_path)
+        os.remove(unwanted_path)
+        print(f'-- removed {filename}')
