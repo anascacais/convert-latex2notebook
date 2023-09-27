@@ -50,7 +50,7 @@ def main(latex_folder_dir):
     body = parse_figures(body)
     body = parse_code(body)
 
-    body_items = re.split(r'```\(python\)([^?]*)\(python\)```', body)
+    body_items = re.split(r'```\(python\)([^`?]*)```', body)
     for i, item in enumerate(body_items):
         if i % 2 == 0:
             add_cell(item, 'md', nb)

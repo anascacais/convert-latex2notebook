@@ -29,6 +29,7 @@ def parse_text_formatting(test_string):
         test_string = test_string.replace(f'\\ref{{{ref_item}}}', f'`{ref_item}`')
 
     test_string = test_string.replace('\\_', '_')
+    test_string = test_string.replace('\\newpage', '')
 
     return test_string
 
@@ -73,24 +74,30 @@ def parse_sections(test_string):
         test_string = test_string.replace(f'\\subsection{{{title}}}', f'## <span style="color:#484848;"> {title.strip()}  </span>')
 
     
-    subsubsection_titles = re.findall(r'\\subsubsection{([^}]*)}', test_string)
+    subsubsection_titles = re.findall(r'\\subsubsection\*{([^}]*)}', test_string)
     for i,title in enumerate(subsubsection_titles):
-        test_string = test_string.replace(f'\\subsection{{{title}}}', f'##### <div style="color:#484848"> {title.strip()} </div>')
+        test_string = test_string.replace(f'\\subsubsection*{{{title}}}', f'##### <div style="color:#484848"> {title.strip()} </div>')
 
     return test_string
 
 
 
 def parse_code(test_string):
+
+    test_string = test_string.replace('\\begin{lstlisting}[language=Python]', '```(python)')
+    test_string = test_string.replace('\\begin{lstlisting}[language=C++]', '```')
+    test_string = test_string.replace('\\end{lstlisting}', '```')
+
+    # code_items = re.findall(r'\\begin{lstlisting}\[language=Python]([^\\?!]*)\\end{lstlisting}', test_string)
+    # for code_item in code_items:
+    #     test_string = test_string.replace(f'\\begin{{lstlisting}}[language=Python]{code_item}\\end{{lstlisting}}', f'```(python)\n{code_item}\n```')
     
-    code_items = re.findall(r'\\begin{lstlisting}\[language=C\+\+\]([^?!]*)\\end{lstlisting}', test_string)
+    # code_items = re.findall(r'\\begin{lstlisting}\[language=C\+\+\]([^\\?!]*)\\end{lstlisting}', test_string)
 
-    for code_item in code_items:
-        test_string = test_string.replace(f'\\begin{{lstlisting}}[language=C++]{code_item}\\end{{lstlisting}}', f'```\n{code_item}\n```')
+    # for code_item in code_items:
+    #     test_string = test_string.replace(f'\\begin{{lstlisting}}[language=C++]{code_item}\\end{{lstlisting}}', f'```\n{code_item}\n```')
 
-    code_items = re.findall(r'\\begin{lstlisting}\[language=Python]([^?!]*)\\end{lstlisting}', test_string)
-    for code_item in code_items:
-        test_string = test_string.replace(f'\\begin{{lstlisting}}[language=Python]{code_item}\\end{{lstlisting}}', f'```(python)\n{code_item}\n(python)```')
+    
     
     return test_string
 
